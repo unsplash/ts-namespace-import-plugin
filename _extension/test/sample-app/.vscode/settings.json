@@ -1,0 +1,10 @@
+{
+  "unsplash.codeActions.namespaceImports": {
+    "O": {
+      "importPath": "path/to/Option"
+    },
+    "RemoteData": {
+      "importPath": "path/to/RemoteData"
+    }
+  }
+}
