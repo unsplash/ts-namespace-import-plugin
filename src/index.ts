@@ -1,4 +1,4 @@
-import * as ts_module from "../node_modules/typescript/lib/tsserverlibrary";
+import * as ts_module from "typescript/lib/tsserverlibrary";
 
 function init(modules: {typescript: typeof ts_module}) {
     const ts = modules.typescript;
@@ -22,7 +22,7 @@ function init(modules: {typescript: typeof ts_module}) {
 
         // Remove specified entries from completion list
         proxy.getCompletionsAtPosition = (fileName, position) => {
-            const prior = info.languageService.getCompletionsAtPosition(fileName, position);
+            const prior = info.languageService.getCompletionsAtPosition(fileName, position, undefined);
             const oldLength = prior.entries.length;
             prior.entries = prior.entries.filter(e => whatToRemove.indexOf(e.name) < 0);
 

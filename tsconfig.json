@@ -4,6 +4,7 @@
         "target": "es5",
         "noImplicitAny": false,
         "sourceMap": false,
-        "outDir": "bin"
-    }
+        "outDir": "dist"
+    },
+    "exclude": ["./_extension/*"]
 }
