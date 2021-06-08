@@ -25,7 +25,8 @@ function init(modules: { typescript: typeof ts_module }) {
         position,
         options
       );
-      prior.entries = prior.entries.filter((e) => e.name !== "caller");
+      prior.entries = prior.entries.filter((e) => e.name !== "toString");
+
       return prior;
     };
 
