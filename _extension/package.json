@@ -16,6 +16,12 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
+    "typescriptServerPlugins": [
+      {
+        "name": "ts-refactor-tools",
+        "enableForWorkspaceTypeScriptVersions": true
+      }
+    ],
     "configuration": {
       "title": "UnsplashImportNamespaceCodeAction",
       "properties": {
@@ -54,5 +60,7 @@
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "ts-refactor-tools": "*"
+  }
 }
