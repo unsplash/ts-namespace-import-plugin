@@ -12,7 +12,5 @@ as embedding the plugin code. Next a new VSCode will open with the extension loa
 
 ### Improvements
 
-- Don't provide a code action if the namespace is already in scope
 - Insert suggestions in VSCode's completion https://github.com/Asana/typescript-namespace-imports-vscode-plugin/blob/05ca34e350166b0d2189f0625712cb3228e28e1d/src/extension.ts#L29-L30
 - Re-configure code actions when user's settings change to avoid having the reload the window
-- Allow code action even if the character isn't selected (e.g caret is either before or after)

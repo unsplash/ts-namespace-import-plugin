@@ -2,16 +2,12 @@ import * as ts_module from "typescript/lib/tsserverlibrary";
 
 const pluginName = "ts-refactor-tools";
 
+const enum RefactorAction {
+  ImportNamespace = "import-namespace",
+}
+
 function init(modules: { typescript: typeof ts_module }) {
   const ts = modules.typescript;
-
-  function positionOrRangeToRange(
-    positionOrRange: number | ts_module.TextRange
-  ): ts_module.TextRange {
-    return typeof positionOrRange === "number"
-      ? { pos: positionOrRange, end: positionOrRange }
-      : positionOrRange;
-  }
 
   /**normalize the parameter so we are sure is of type number */
   function positionOrRangeToNumber(
@@ -39,7 +35,7 @@ function init(modules: { typescript: typeof ts_module }) {
   function create(info: ts.server.PluginCreateInfo) {
     const log = (msg: any) =>
       info.project.projectService.logger.info(`[${pluginName}] ${msg}`);
-    // Set up decorator
+
     const proxy = Object.create(null) as ts.LanguageService;
     const oldLS = info.languageService;
     for (const k in oldLS) {
@@ -48,14 +44,33 @@ function init(modules: { typescript: typeof ts_module }) {
       };
     }
 
-    proxy.getApplicableRefactors = (
+    // TODO: import config from extension
+    const config: { [namespace: string]: { importPath: string } } = {
+      O: {
+        importPath: "path/To/Optiom",
+      },
+      RemoteData: {
+        importPath: "path/to/RemoteData",
+      },
+    };
+
+    // getCodeFixesAtPosition(fileName: string, start: number, end: number, errorCodes: readonly number[], formatOptions: FormatCodeSettings, preferences: UserPreferences): readonly CodeFixAction[];
+    proxy.getCodeFixesAtPosition = (
       filename,
-      positionOrRange
-    ): ts_module.ApplicableRefactorInfo[] => {
-      const refactors = info.languageService.getApplicableRefactors(
+      start,
+      end,
+      errorCodes,
+      formatOptions,
+      preferences
+    ) => {
+      log(`${start}:${end}`);
+      const prior = info.languageService.getCodeFixesAtPosition(
         filename,
-        positionOrRange,
-        undefined
+        start,
+        end,
+        errorCodes,
+        formatOptions,
+        preferences
       );
 
       const sourceFile = info.languageService
@@ -64,90 +79,40 @@ function init(modules: { typescript: typeof ts_module }) {
 
       const nodeAtCursor = findChildContainingPosition(
         sourceFile,
-        positionOrRangeToNumber(positionOrRange)
+        positionOrRangeToNumber({ pos: start, end })
       );
 
-      log(nodeAtCursor.kind);
+      const text = nodeAtCursor.getText();
 
       if (
-        nodeAtCursor !== undefined &&
         nodeAtCursor.kind === ts.SyntaxKind.Identifier &&
         nodeAtCursor.parent &&
-        [
-          ts.SyntaxKind.InterfaceDeclaration,
-          ts.SyntaxKind.ClassDeclaration,
-        ].includes(nodeAtCursor.parent.kind)
+        nodeAtCursor.parent.kind === ts.SyntaxKind.PropertyAccessExpression &&
+        Object.keys(config).includes(text)
       ) {
-        const refactorInfo: ts_module.ApplicableRefactorInfo = {
-          name: "useless-rename-info",
-          description: "useless rename desc",
-          actions: [{ name: "useless-rename", description: "Useless Rename" }],
-        };
-        refactors.push(refactorInfo);
-        return refactors;
-      } else {
-        return refactors;
-      }
-    };
+        const newText = `import * as ${text} from '${config[text].importPath}';\n`;
 
-    proxy.getEditsForRefactor = (
-      fileName,
-      formatOptions,
-      positionOrRange,
-      refactorName,
-      actionName,
-      preferences
-    ) => {
-      const refactors = info.languageService.getEditsForRefactor(
-        fileName,
-        formatOptions,
-        positionOrRange,
-        refactorName,
-        actionName,
-        preferences
-      );
-
-      log("Execute " + actionName)
-
-      if (actionName !== "useless-rename") {
-        return refactors;
-      }
-
-      const sourceFile = info.languageService
-        .getProgram()
-        .getSourceFile(fileName);
-      const nodeAtCursor = findChildContainingPosition(
-        sourceFile,
-        positionOrRangeToNumber(positionOrRange)
-      );
-
-      log(`edits: ${nodeAtCursor.kind}`)
-
-      if (
-        nodeAtCursor !== undefined &&
-        nodeAtCursor.kind === ts.SyntaxKind.Identifier
-      ) {
-        const renameTo =
-          "Beautiful" + (nodeAtCursor as ts.Identifier).escapedText;
-        const range = positionOrRangeToRange(positionOrRange);
-        return {
-          edits: [
+        // Since we're using a codefix, if the namespace is already imported the code fix won't be suggested
+        const codeAction: ts_module.CodeFixAction = {
+          fixName: RefactorAction.ImportNamespace,
+          description: `import ${text} namespace`,
+          changes: [
             {
-              fileName,
+              fileName: filename,
               textChanges: [
                 {
-                  span: { start: range.pos, length: range.end - range.pos }, // the segment of code that will be replaced
-                  newText: renameTo,
+                  newText,
+                  span: { start: 0, length: 0 },
                 },
               ],
             },
           ],
-          renameFilename: undefined,
-          renameLocation: undefined,
         };
-      } else {
-        return refactors;
+
+        return [...prior, codeAction];
       }
+
+      return prior;
     };
 
     return proxy;
@@ -155,7 +120,5 @@ function init(modules: { typescript: typeof ts_module }) {
 
   return { create };
 }
-
-/**normalize the parameter so we are sure is of type Range */
 
 export = init;
