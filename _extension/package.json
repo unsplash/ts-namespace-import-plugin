@@ -1,8 +1,8 @@
 {
-  "name": "unsplash-code-actions",
-  "displayName": "unsplash-code-actions",
+  "name": "unsplash",
+  "displayName": "unsplash",
   "publisher": "unsplash",
-  "description": "Add code actions to unsplash web repo",
+  "description": "Add stuff to vscode",
   "version": "0.1.0",
   "files": [
     "dist/*"

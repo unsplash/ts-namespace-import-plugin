@@ -46,15 +46,53 @@ function init(modules: { typescript: typeof ts_module }) {
 
     // TODO: import config from extension
     const config: { [namespace: string]: { importPath: string } } = {
+      A: {
+        importPath: "shared/facades/Array",
+      },
+      D: {
+        importPath: "shared/facades/Dictionary",
+      },
+      E: {
+        importPath: "shared/facades/Either",
+      },
+      NonEmptyArray: {
+        importPath: "fp-ts/NonEmptyArray",
+      },
       O: {
-        importPath: "path/To/Optiom",
+        importPath: "shared/facades/Option",
+      },
+      ObservableEither: {
+        importPath: "shared/facades/ObservableEither",
+      },
+      ObservableOption: {
+        importPath: "shared/facades/ObservableOption",
+      },
+      Photo: {
+        importPath: "state/entities/photos",
+      },
+      PhotoApi: {
+        importPath: "services/api/photos/types",
+      },
+      R: {
+        importPath: "shared/facades/Record",
+      },
+      Reader: {
+        importPath: "shared/facades/Reader",
       },
       RemoteData: {
-        importPath: "path/to/RemoteData",
+        importPath: "shared/facades/RemoteData",
+      },
+      Rx: {
+        importPath: "shared/facades/rx",
+      },
+      t: {
+        importPath: "shared/facades/io-ts",
       },
     };
 
-    // getCodeFixesAtPosition(fileName: string, start: number, end: number, errorCodes: readonly number[], formatOptions: FormatCodeSettings, preferences: UserPreferences): readonly CodeFixAction[];
+    // This ALWAYS returns `{name: "ts-refactor-tools", global: true}`
+    log("CONFIG: " + JSON.stringify(info.config, null, 2));
+
     proxy.getCodeFixesAtPosition = (
       filename,
       start,
@@ -63,7 +101,6 @@ function init(modules: { typescript: typeof ts_module }) {
       formatOptions,
       preferences
     ) => {
-      log(`${start}:${end}`);
       const prior = info.languageService.getCodeFixesAtPosition(
         filename,
         start,
