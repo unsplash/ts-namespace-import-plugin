@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "compile": "rm -rf ./dist && tsc",
-    "prepublishOnly": "compile"
+    "prepublishOnly": "yarn run compile"
   },
   "repository": {
     "type": "git",
