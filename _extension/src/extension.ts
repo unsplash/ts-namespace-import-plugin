@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 
 const typeScriptExtensionId = "vscode.typescript-language-features";
-const pluginId = "ts-refactor-tools";
+const pluginId = "@unsplash/ts-refactor-tools";
 
 export async function activate(context: vscode.ExtensionContext) {
   const extension = vscode.extensions.getExtension(typeScriptExtensionId);

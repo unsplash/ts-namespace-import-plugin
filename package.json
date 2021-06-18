@@ -1,5 +1,5 @@
 {
-  "name": "ts-refactor-tools",
+  "name": "@unsplash/ts-refactor-tools",
   "version": "0.1.0",
   "description": "Provides tool for refactoring unsplash web codebase",
   "main": "dist/index.js",

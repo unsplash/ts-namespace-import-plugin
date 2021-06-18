@@ -1,6 +1,6 @@
 import * as ts_module from "typescript/lib/tsserverlibrary";
 
-const pluginName = "ts-refactor-tools";
+const pluginName = "@unsplash/ts-refactor-tools";
 
 const enum RefactorAction {
   ImportNamespace = "import-namespace",

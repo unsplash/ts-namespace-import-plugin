@@ -18,7 +18,7 @@
   "contributes": {
     "typescriptServerPlugins": [
       {
-        "name": "ts-refactor-tools",
+        "name": "@unsplash/ts-refactor-tools",
         "enableForWorkspaceTypeScriptVersions": true
       }
     ],
@@ -61,6 +61,6 @@
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
-    "ts-refactor-tools": "*"
+    "@unsplash/ts-refactor-tools": "*"
   }
 }
