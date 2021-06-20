@@ -1,9 +1,11 @@
 .vscode/**
 test/**
-node_modules/**
 src/**
 .gitignore
 .yarnrc
 **/tsconfig.json
 **/*.map
 **/*.ts
+sample-app/*
+node_modules/*
+!node_modules/@unsplash
