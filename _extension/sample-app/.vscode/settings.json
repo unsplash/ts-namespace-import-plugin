@@ -2,6 +2,9 @@
   "unsplash.codeActions.namespaceImports": {
     "O": {
       "importPath": "path/to/Option"
+    },
+    "E": {
+      "importPath": "path/to/Either"
     }
   }
 }
