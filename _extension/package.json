@@ -3,7 +3,7 @@
   "displayName": "TypeScript refactor tools",
   "publisher": "unsplash",
   "description": "Useful refactor tools for Unsplash web codebase",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "files": [
     "dist/*"
   ],
