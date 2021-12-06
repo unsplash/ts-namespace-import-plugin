@@ -25,6 +25,13 @@ as embedding the plugin code. Next a new VSCode will open with the extension loa
 - From now on, the plugin needs to be re-compiled when changes are made. The extension _technically_ watches changes automatically.
 - Don't forget to "Reload Window" in the extension host window to apply latest changes
 
+To build a new package:
+
+```bash
+yarn run compile
+vsce package
+```
+
 ## Improvements
 
 - Insert suggestions in VSCode's completion https://github.com/Asana/typescript-namespace-imports-vscode-plugin/blob/05ca34e350166b0d2189f0625712cb3228e28e1d/src/extension.ts#L29-L30
