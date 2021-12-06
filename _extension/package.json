@@ -63,7 +63,7 @@
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
-    "@unsplash/ts-refactor-tools": "0.2.0"
+    "@unsplash/ts-refactor-tools": "0.2.2"
   },
   "extensionDependencies": [
     "vscode.typescript"
