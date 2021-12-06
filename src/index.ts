@@ -81,12 +81,6 @@ function init(modules: { typescript: typeof ts_module }) {
 
       if (
         nodeAtCursor.kind === ts.SyntaxKind.Identifier &&
-        nodeAtCursor.parent &&
-        [
-          ts.SyntaxKind.PropertyAccessExpression,
-          // For type it's not a PropertyAccessExpression but a QualifiedName whatever that means.
-          ts.SyntaxKind.QualifiedName,
-        ].includes(nodeAtCursor.parent.kind) &&
         Object.keys(config).includes(text)
       ) {
         const newText = `import * as ${text} from '${config[text].importPath}';\n`;
