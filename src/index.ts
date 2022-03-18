@@ -108,6 +108,148 @@ function init(modules: { typescript: typeof ts_module }) {
       return prior;
     };
 
+    proxy.getCompletionsAtPosition = (fileName, position, options) => {
+      const prior = info.languageService.getCompletionsAtPosition(
+        fileName,
+        position,
+        options
+      );
+
+      const sourceFile = info.languageService
+        .getProgram()
+        .getSourceFile(fileName);
+
+      const nodeAtCursor = findChildContainingPosition(
+        sourceFile,
+        /**
+         * We presume the cursor is at the end of the identifier that's being
+         * typed. We have to subtract 1 from the position so the position is
+         * inside of the identifier in order for this function to return the
+         * identifier node.
+         *
+         * ```js
+         * const x = Foo|
+         * //           ^ cursor
+         * ```
+         */
+        position - 1
+      );
+      const text = nodeAtCursor.getText();
+
+      const findExistingImport = (
+        sourceFile: ts.SourceFile,
+        name: string
+      ): ts.Node | undefined => {
+        const find = (node: ts.Node): ts.Node | undefined =>
+          ts_module.isNamespaceImport(node) && node.name.getText() === name
+            ? node
+            : ts.forEachChild(node, find);
+
+        return find(sourceFile);
+      };
+
+      const extras: ts_module.CompletionEntry[] = [];
+
+      for (const configEntry of Object.keys(config)) {
+        if (
+          configEntry.startsWith(text) &&
+          findExistingImport(sourceFile, configEntry) === undefined
+        ) {
+          const completion: ts_module.CompletionEntry = {
+            name: configEntry,
+            // TODO: what does this do?
+            sortText: "15",
+            // TODO: what does this do?
+            kind: ts_module.ScriptElementKind.variableElement,
+            // TODO: what does this do?
+            kindModifiers: "",
+            // TODO: if we set this, completion doesn't show for some reason
+            // hasAction: true,
+            sourceDisplay: [
+              {
+                kind: ts_module.SymbolDisplayPartKind[
+                  ts_module.SymbolDisplayPartKind.text
+                ],
+                text: config[configEntry].importPath,
+              },
+            ],
+            data: {
+              exportName: configEntry,
+              fileName: config[configEntry].importPath,
+              // TODO: what does this do?
+              moduleSpecifier: config[configEntry].importPath,
+            },
+          };
+
+          extras.push(completion);
+        }
+      }
+
+      prior.entries = [...extras, ...prior.entries];
+
+      return prior;
+    };
+
+    proxy.getCompletionEntryDetails = (
+      fileName,
+      position,
+      entryName,
+      formatOptions,
+      source,
+      preferences,
+      data
+    ) => {
+      for (const configEntry of Object.keys(config)) {
+        if (
+          entryName === configEntry &&
+          // This is used to distinguish the auto import completion from other
+          // completions (e.g. standard text completions) with the same entry
+          // name.
+          data !== undefined &&
+          data.fileName !== undefined
+        ) {
+          const newText = `import * as ${data.exportName} from '${data.fileName}';\n`;
+
+          const codeAction: ts_module.CodeFixAction = {
+            fixName: RefactorAction.ImportNamespace,
+            description: `Add namespace import of "${data.fileName}"`,
+            changes: [
+              {
+                fileName,
+                textChanges: [
+                  {
+                    newText,
+                    span: { start: 0, length: 0 },
+                  },
+                ],
+              },
+            ],
+          };
+
+          return {
+            name: configEntry,
+            codeActions: [codeAction],
+            // TODO: what does this do?
+            displayParts: [],
+            // TODO: what does this do?
+            kind: ts_module.ScriptElementKind.variableElement,
+            // TODO: what does this do?
+            kindModifiers: "",
+          };
+        }
+      }
+
+      return info.languageService.getCompletionEntryDetails(
+        fileName,
+        position,
+        entryName,
+        formatOptions,
+        source,
+        preferences,
+        data
+      );
+    };
+
     return proxy;
   }
 
