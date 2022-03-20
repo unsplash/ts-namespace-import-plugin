@@ -152,13 +152,13 @@ function init(modules: { typescript: typeof ts_module }) {
 
       const extras: ts_module.CompletionEntry[] = [];
 
-      for (const configEntry of Object.keys(config)) {
+      for (const namespaceName of Object.keys(config)) {
         if (
-          configEntry.startsWith(text) &&
-          findExistingImport(sourceFile, configEntry) === undefined
+          namespaceName.startsWith(text) &&
+          findExistingImport(sourceFile, namespaceName) === undefined
         ) {
           const completion: ts_module.CompletionEntry = {
-            name: configEntry,
+            name: namespaceName,
             // TODO: what does this do?
             // https://github.com/microsoft/TypeScript/blob/92af654a83c497eb35aed7d186b746c8ca4b88fb/src/services/completions.ts#L12
             sortText: "15",
@@ -173,14 +173,14 @@ function init(modules: { typescript: typeof ts_module }) {
                 kind: ts_module.SymbolDisplayPartKind[
                   ts_module.SymbolDisplayPartKind.text
                 ],
-                text: config[configEntry].importPath,
+                text: config[namespaceName].importPath,
               },
             ],
             data: {
-              exportName: configEntry,
-              fileName: config[configEntry].importPath,
+              exportName: namespaceName,
+              fileName: config[namespaceName].importPath,
               // TODO: what does this do?
-              moduleSpecifier: config[configEntry].importPath,
+              moduleSpecifier: config[namespaceName].importPath,
             },
           };
 
@@ -202,9 +202,9 @@ function init(modules: { typescript: typeof ts_module }) {
       preferences,
       data
     ) => {
-      for (const configEntry of Object.keys(config)) {
+      for (const namespaceName of Object.keys(config)) {
         if (
-          entryName === configEntry &&
+          entryName === namespaceName &&
           // This is used to distinguish the auto import completion from other
           // completions (e.g. standard text completions) with the same entry
           // name.
@@ -218,7 +218,7 @@ function init(modules: { typescript: typeof ts_module }) {
           });
 
           return {
-            name: configEntry,
+            name: namespaceName,
             codeActions: [codeAction],
             // TODO: what does this do?
             displayParts: [],
