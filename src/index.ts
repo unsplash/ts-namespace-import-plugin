@@ -10,6 +10,34 @@ const enum RefactorAction {
   ImportNamespace = "import-namespace",
 }
 
+const createCodeAction = ({
+  namespaceName,
+  importPath,
+  fileName,
+}: {
+  namespaceName: string;
+  importPath: string;
+  fileName: string;
+}): ts_module.CodeFixAction => {
+  const newText = `import * as ${namespaceName} from '${importPath}';\n`;
+
+  return {
+    fixName: RefactorAction.ImportNamespace,
+    description: `Add namespace import of "${importPath}"`,
+    changes: [
+      {
+        fileName,
+        textChanges: [
+          {
+            newText,
+            span: { start: 0, length: 0 },
+          },
+        ],
+      },
+    ],
+  };
+};
+
 function init(modules: { typescript: typeof ts_module }) {
   let config: Configuration = {};
   const ts = modules.typescript;
@@ -83,24 +111,12 @@ function init(modules: { typescript: typeof ts_module }) {
         nodeAtCursor.kind === ts.SyntaxKind.Identifier &&
         Object.keys(config).includes(text)
       ) {
-        const newText = `import * as ${text} from '${config[text].importPath}';\n`;
-
         // Since we're using a codefix, if the namespace is already imported the code fix won't be suggested
-        const codeAction: ts_module.CodeFixAction = {
-          fixName: RefactorAction.ImportNamespace,
-          description: `Add namespace import of "${config[text].importPath}"`,
-          changes: [
-            {
-              fileName: filename,
-              textChanges: [
-                {
-                  newText,
-                  span: { start: 0, length: 0 },
-                },
-              ],
-            },
-          ],
-        };
+        const codeAction = createCodeAction({
+          fileName: filename,
+          importPath: config[text].importPath,
+          namespaceName: text,
+        });
 
         return [...prior, codeAction];
       }
@@ -208,23 +224,11 @@ function init(modules: { typescript: typeof ts_module }) {
           data !== undefined &&
           data.fileName !== undefined
         ) {
-          const newText = `import * as ${data.exportName} from '${data.fileName}';\n`;
-
-          const codeAction: ts_module.CodeFixAction = {
-            fixName: RefactorAction.ImportNamespace,
-            description: `Add namespace import of "${data.fileName}"`,
-            changes: [
-              {
-                fileName,
-                textChanges: [
-                  {
-                    newText,
-                    span: { start: 0, length: 0 },
-                  },
-                ],
-              },
-            ],
-          };
+          const codeAction: ts_module.CodeFixAction = createCodeAction({
+            fileName,
+            importPath: data.fileName,
+            namespaceName: data.exportName,
+          });
 
           return {
             name: configEntry,
