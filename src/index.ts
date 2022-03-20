@@ -57,7 +57,7 @@ function init(modules: { typescript: typeof ts_module }) {
     position: number
   ): ts.Node | undefined => {
     const find = (node: ts.Node): ts.Node | undefined => {
-      if (position >= node.getStart() && position < node.getEnd()) {
+      if (position >= node.getStart() && position <= node.getEnd()) {
         return ts.forEachChild(node, find) ?? node;
       }
     };
@@ -135,21 +135,7 @@ function init(modules: { typescript: typeof ts_module }) {
         .getProgram()
         .getSourceFile(fileName);
 
-      const nodeAtCursor = findChildContainingPosition(
-        sourceFile,
-        /**
-         * We presume the cursor is at the end of the identifier that's being
-         * typed. We have to subtract 1 from the position so the position is
-         * inside of the identifier in order for this function to return the
-         * identifier node.
-         *
-         * ```js
-         * const x = Foo|
-         * //           ^ cursor
-         * ```
-         */
-        position - 1
-      );
+      const nodeAtCursor = findChildContainingPosition(sourceFile, position);
       const text = nodeAtCursor.getText();
 
       const findExistingImport = (
