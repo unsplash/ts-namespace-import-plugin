@@ -160,6 +160,7 @@ function init(modules: { typescript: typeof ts_module }) {
           const completion: ts_module.CompletionEntry = {
             name: configEntry,
             // TODO: what does this do?
+            // https://github.com/microsoft/TypeScript/blob/92af654a83c497eb35aed7d186b746c8ca4b88fb/src/services/completions.ts#L12
             sortText: "15",
             // TODO: what does this do?
             kind: ts_module.ScriptElementKind.variableElement,
