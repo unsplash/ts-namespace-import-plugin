@@ -80,7 +80,7 @@ function init(modules: { typescript: typeof ts_module }) {
     }
 
     proxy.getCodeFixesAtPosition = (
-      filename,
+      fileName,
       start,
       end,
       errorCodes,
@@ -88,7 +88,7 @@ function init(modules: { typescript: typeof ts_module }) {
       preferences
     ) => {
       const prior = info.languageService.getCodeFixesAtPosition(
-        filename,
+        fileName,
         start,
         end,
         errorCodes,
@@ -98,7 +98,7 @@ function init(modules: { typescript: typeof ts_module }) {
 
       const sourceFile = info.languageService
         .getProgram()
-        .getSourceFile(filename);
+        .getSourceFile(fileName);
 
       const nodeAtCursor = findChildContainingPosition(
         sourceFile,
@@ -113,7 +113,7 @@ function init(modules: { typescript: typeof ts_module }) {
       ) {
         // Since we're using a codefix, if the namespace is already imported the code fix won't be suggested
         const codeAction = createCodeAction({
-          fileName: filename,
+          fileName,
           importPath: config[text].importPath,
           namespaceName: text,
         });
