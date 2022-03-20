@@ -29,7 +29,3 @@ To build a new package:
 yarn run compile
 vsce package
 ```
-
-## Improvements
-
-- Insert suggestions in VSCode's completion https://github.com/Asana/typescript-namespace-imports-vscode-plugin/blob/05ca34e350166b0d2189f0625712cb3228e28e1d/src/extension.ts#L29-L30
