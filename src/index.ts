@@ -52,18 +52,18 @@ function init(modules: { typescript: typeof ts_module }) {
   }
 
   /** from given position we find the child node that contains it */
-  function findChildContainingPosition(
+  const findChildContainingPosition = (
     sourceFile: ts.SourceFile,
     position: number
-  ): ts.Node | undefined {
-    function find(node: ts.Node): ts.Node | undefined {
+  ): ts.Node | undefined => {
+    const find = (node: ts.Node): ts.Node | undefined => {
       if (position >= node.getStart() && position < node.getEnd()) {
         return ts.forEachChild(node, find) || node;
       }
-    }
+    };
 
     return find(sourceFile);
-  }
+  };
 
   // This function is needed to set the config at loading time as well as any further updates.
   function onConfigurationChanged(newConfig: Configuration) {
