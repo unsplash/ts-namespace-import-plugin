@@ -58,7 +58,7 @@ function init(modules: { typescript: typeof ts_module }) {
   ): ts.Node | undefined => {
     const find = (node: ts.Node): ts.Node | undefined => {
       if (position >= node.getStart() && position < node.getEnd()) {
-        return ts.forEachChild(node, find) || node;
+        return ts.forEachChild(node, find) ?? node;
       }
     };
 
