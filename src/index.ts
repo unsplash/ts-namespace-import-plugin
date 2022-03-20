@@ -88,7 +88,7 @@ function init(modules: { typescript: typeof ts_module }) {
         // Since we're using a codefix, if the namespace is already imported the code fix won't be suggested
         const codeAction: ts_module.CodeFixAction = {
           fixName: RefactorAction.ImportNamespace,
-          description: `import ${text} namespace`,
+          description: `Add namespace import of "${config[text].importPath}"`,
           changes: [
             {
               fileName: filename,
