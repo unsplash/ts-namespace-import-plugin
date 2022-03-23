@@ -18,6 +18,10 @@
     "typescript"
   ],
   "devDependencies": {
+    "@types/node": "^17.0.22",
     "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "@phenomnomnominal/tsquery": "^4.2.0"
   }
 }
