@@ -22,6 +22,9 @@
     "typescript": "^4.3.2"
   },
   "dependencies": {
-    "@phenomnomnominal/tsquery": "^4.2.0"
+    "@phenomnomnominal/tsquery": "^4.2.0",
+    "@unsplash/intlc": "^0.3.0-0",
+    "fp-ts": "^2.11.9",
+    "io-ts": "^2.2.16"
   }
 }

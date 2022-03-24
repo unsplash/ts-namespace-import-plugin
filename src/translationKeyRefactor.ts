@@ -104,7 +104,7 @@ export const getEditsForRefactor =
       })
     );
     execSync(
-      `intlc compile ${translationFileName} -l en-US > ${resolve(
+      `yarn intlc compile ${translationFileName} -l en-US > ${resolve(
         dirname(sourceFile.fileName),
         "lang/en-US.tsx"
       )}`
