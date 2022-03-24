@@ -1,41 +1,18 @@
 import * as ts_module from "typescript/lib/tsserverlibrary";
-
-type Configuration = {
-  [namespace: string]: {
-    importPath: string;
-  };
-};
-
-const enum RefactorAction {
-  ImportNamespace = "import-namespace",
-}
+import { tsquery } from "@phenomnomnominal/tsquery";
+import * as ts2 from "typescript";
+import { dirname, relative, resolve } from "path";
+import { findChildContainingPosition, positionOrRangeToNumber } from "./utils";
+import { Configuration, RefactorAction } from "./Config";
+import {
+  getApplicableRefactors,
+  getEditsForRefactor,
+} from "./translationKeyRefactor";
+import { findRenameLocations } from "./translationKeyRenameLocations";
 
 function init(modules: { typescript: typeof ts_module }) {
   let config: Configuration = {};
   const ts = modules.typescript;
-
-  /** normalize the parameter so we are sure is of type number */
-  function positionOrRangeToNumber(
-    positionOrRange: number | ts_module.TextRange
-  ): number {
-    return typeof positionOrRange === "number"
-      ? positionOrRange
-      : (positionOrRange as ts_module.TextRange).pos;
-  }
-
-  /** from given position we find the child node that contains it */
-  function findChildContainingPosition(
-    sourceFile: ts.SourceFile,
-    position: number
-  ): ts.Node | undefined {
-    function find(node: ts.Node): ts.Node | undefined {
-      if (position >= node.getStart() && position < node.getEnd()) {
-        return ts.forEachChild(node, find) || node;
-      }
-    }
-
-    return find(sourceFile);
-  }
 
   // This function is needed to set the config at loading time as well as any further updates.
   function onConfigurationChanged(newConfig: Configuration) {
@@ -44,12 +21,21 @@ function init(modules: { typescript: typeof ts_module }) {
 
   function create(info: ts.server.PluginCreateInfo) {
     const proxy = Object.create(null) as ts.LanguageService;
+    const logger = (msg: string) =>
+      info.project.projectService.logger.info(`[ts-graphql-plugin] ${msg}`);
+
+    logger("a");
     const oldLS = info.languageService;
     for (const k in oldLS) {
       (<any>proxy)[k] = function () {
         return oldLS[k].apply(oldLS, arguments);
       };
     }
+
+    proxy.findRenameLocations = findRenameLocations(info, info.project, ts);
+    proxy.getApplicableRefactors = getApplicableRefactors(info, ts);
+
+    proxy.getEditsForRefactor = getEditsForRefactor(info, info.project, ts);
 
     proxy.getCodeFixesAtPosition = (
       filename,
@@ -72,13 +58,13 @@ function init(modules: { typescript: typeof ts_module }) {
         .getProgram()
         .getSourceFile(filename);
 
-      const nodeAtCursor = findChildContainingPosition(
+      const nodeAtCursor = findChildContainingPosition(ts)(
         sourceFile,
         positionOrRangeToNumber({ pos: start, end })
       );
 
       const text = nodeAtCursor.getText();
-
+      // throw new Error(JSON.stringify(Object.keys(config)));
       if (
         nodeAtCursor.kind === ts.SyntaxKind.Identifier &&
         Object.keys(config).includes(text)
@@ -104,10 +90,7 @@ function init(modules: { typescript: typeof ts_module }) {
 
         return [...prior, codeAction];
       }
-
-      return prior;
     };
-
     return proxy;
   }
 
