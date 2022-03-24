@@ -99,7 +99,8 @@ export const getEditsForRefactor =
       translationFileName,
       JSON.stringify({
         ...json,
-        [variableName]: { message: JSON.parse(text) },
+        // We remove first and last char with the slice to remove the quotes
+        [variableName]: { message: text.slice(1, -1) },
       })
     );
     execSync(
@@ -110,7 +111,7 @@ export const getEditsForRefactor =
     );
     const codeAction: ts_module.RefactorEditInfo = {
       renameFilename: filename,
-      renameLocation: nodeAtCursor.end - 6,
+      renameLocation: nodeAtCursor.end - 3,
       edits: [
         {
           fileName: filename,
