@@ -1,5 +1,4 @@
 import type * as ts_module from "typescript/lib/tsserverlibrary";
-import * as tsmorph from "ts-morph";
 
 import { Configuration, RefactorAction } from "./Config";
 import { dirname, resolve } from "path";
