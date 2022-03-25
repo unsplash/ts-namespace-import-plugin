@@ -79,6 +79,7 @@ export const getEditsForRefactor =
       "lang/en-US.translations.json"
     );
 
+    info.project.log(ls.readFile(translationFileName));
     // TODO use the ts ast to transform this
     const json = JSON.parse(ls.readFile(translationFileName));
 
@@ -93,7 +94,6 @@ export const getEditsForRefactor =
       .join(" ")
       .toLowerCase()
       .replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
-
     info.project.writeFile(
       translationFileName,
       JSON.stringify({
@@ -103,7 +103,11 @@ export const getEditsForRefactor =
       })
     );
     execSync(
-      `yarn -s intlc compile ${translationFileName} -l en-US > ${resolve(
+      `${resolve(
+        __dirname,
+        "..",
+        "bin/intlc"
+      )} compile ${translationFileName} -l en-US > ${resolve(
         dirname(sourceFile.fileName),
         "lang/en-US.tsx"
       )}`
