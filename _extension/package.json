@@ -3,7 +3,7 @@
   "displayName": "TypeScript refactor tools",
   "publisher": "unsplash",
   "description": "Useful refactor tools for Unsplash web codebase",
-  "version": "0.2.2",
+  "version": "0.3.5",
   "files": [
     "dist/*"
   ],
@@ -63,7 +63,7 @@
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
-    "@unsplash/ts-refactor-tools": "0.2.2"
+    "@unsplash/ts-refactor-tools": "0.3.5"
   },
   "extensionDependencies": [
     "vscode.typescript"
