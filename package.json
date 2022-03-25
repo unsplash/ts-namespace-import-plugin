@@ -1,11 +1,11 @@
 {
   "name": "@unsplash/ts-refactor-tools",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "description": "Provides tool for refactoring unsplash web codebase",
   "main": "dist/index.js",
   "files": [
     "./dist",
-    "./node_modules/.bin"
+    "bin"
   ],
   "scripts": {
     "compile": "rm -rf ./dist && tsc",
