@@ -148,7 +148,7 @@ function init(modules: { typescript: typeof ts_module }) {
 
       const extras: ts_module.CompletionEntry[] = [];
 
-      for (const namespaceName of Object.keys(namespace)) {
+      for (const namespaceName of Object.keys(namespaceConfig)) {
         if (
           namespaceName.startsWith(text) &&
           findExistingImport(sourceFile, namespaceName) === undefined
@@ -169,14 +169,14 @@ function init(modules: { typescript: typeof ts_module }) {
                 kind: ts_module.SymbolDisplayPartKind[
                   ts_module.SymbolDisplayPartKind.text
                 ],
-                text: config[namespaceName].importPath,
+                text: namespaceConfig[namespaceName].importPath,
               },
             ],
             data: {
               exportName: namespaceName,
-              fileName: config[namespaceName].importPath,
+              fileName: namespaceConfig[namespaceName].importPath,
               // TODO: what does this do?
-              moduleSpecifier: config[namespaceName].importPath,
+              moduleSpecifier: namespaceConfig[namespaceName].importPath,
             },
           };
 
@@ -198,7 +198,7 @@ function init(modules: { typescript: typeof ts_module }) {
       preferences,
       data
     ) => {
-      for (const namespaceName of Object.keys(config)) {
+      for (const namespaceName of Object.keys(namespaceConfig)) {
         if (
           entryName === namespaceName &&
           // This is used to distinguish the auto import completion from other
