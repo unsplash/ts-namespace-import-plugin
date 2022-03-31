@@ -1,6 +1,16 @@
 # ts-namespace-import-plugin
 
-This plugin can help with importing common namespaces into your modules. What is a namespace import you may ask?
+This plugin can help with importing common namespaces into your modules.
+
+As a code action
+
+<img width="393" alt="image" src="https://user-images.githubusercontent.com/3819093/161133561-d1fc92c1-40f1-4310-b726-069df94962d0.png">
+
+As completion
+
+<img width="815" alt="image" src="https://user-images.githubusercontent.com/3819093/161133672-ad027023-c6fa-451d-a9ee-db16b24fce25.png">
+
+What is a namespace import you may ask?
 You can learn more about them [here](https://unsplash.com/blog/organizing-typescript-modules/) but in short it looks like the following:
 
 ```ts
