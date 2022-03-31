@@ -1,6 +1,6 @@
 import * as ts_module from "typescript/lib/tsserverlibrary";
 
-type Configuration = {
+type NamespacesConfig = {
   [namespace: string]: {
     importPath: string;
   };
@@ -11,7 +11,6 @@ const enum RefactorAction {
 }
 
 function init(modules: { typescript: typeof ts_module }) {
-  let config: Configuration = {};
   const ts = modules.typescript;
 
   /** normalize the parameter so we are sure is of type number */
@@ -37,13 +36,8 @@ function init(modules: { typescript: typeof ts_module }) {
     return find(sourceFile);
   }
 
-  // This function is needed to set the config at loading time as well as any further updates.
-  function onConfigurationChanged(newConfig: Configuration) {
-    config = newConfig;
-  }
-
   function create(info: ts.server.PluginCreateInfo) {
-    const proxy = Object.create(null) as ts.LanguageService;
+    const proxy: ts.LanguageService = Object.create(null);
     const oldLS = info.languageService;
     for (const k in oldLS) {
       (<any>proxy)[k] = function () {
@@ -59,6 +53,7 @@ function init(modules: { typescript: typeof ts_module }) {
       formatOptions,
       preferences
     ) => {
+      const namespaceConfig: NamespacesConfig = info.config.namespaces;
       const prior = info.languageService.getCodeFixesAtPosition(
         filename,
         start,
@@ -81,9 +76,9 @@ function init(modules: { typescript: typeof ts_module }) {
 
       if (
         nodeAtCursor.kind === ts.SyntaxKind.Identifier &&
-        Object.keys(config).includes(text)
+        Object.keys(namespaceConfig).includes(text)
       ) {
-        const newText = `import * as ${text} from '${config[text].importPath}';\n`;
+        const newText = `import * as ${text} from '${namespaceConfig[text].importPath}';\n`;
 
         // Since we're using a codefix, if the namespace is already imported the code fix won't be suggested
         const codeAction: ts_module.CodeFixAction = {
@@ -111,7 +106,7 @@ function init(modules: { typescript: typeof ts_module }) {
     return proxy;
   }
 
-  return { create, onConfigurationChanged };
+  return { create };
 }
 
 export = init;
