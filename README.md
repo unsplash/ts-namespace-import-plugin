@@ -1,11 +1,11 @@
-# ts-refactor-tools
+# ts-namespace-import-plugin
 
 Collection of code actions available as a typescript plugin.
 
 ## Installation
 
 ```sh
-yarn add --dev @unsplash/ts-refactor-tools
+yarn add --dev @unsplash/ts-namespace-import-plugin
 ```
 
 Then add the following to your `tsconfig.json`.
@@ -16,7 +16,7 @@ Then add the following to your `tsconfig.json`.
     // ...other options
     "plugins": [
       {
-        "name": "@unsplash/ts-refactor-tools"
+        "name": "@unsplash/ts-namespace-import-plugin"
       }
     ]
   }
@@ -35,7 +35,7 @@ This plugin can help with importing common namespaces into your modules. You can
     // ...other options
     "plugins": [
       {
-        "name": "@unsplash/ts-refactor-tools",
+        "name": "@unsplash/ts-namespace-import-plugin",
         "namespaces": {
           "MyNamespace": {
             "importPath": "path/to/module"
@@ -58,7 +58,7 @@ MyNamespace.doFoo();
 
 ```sh
 yarn link # From this repo
-yarn link @unsplash/ts-refactor-tools from another repo
+yarn link @unsplash/ts-namespace-import-plugin from another repo
 yarn run compile # when you make changes here to reflect in your target repo
 ```
 

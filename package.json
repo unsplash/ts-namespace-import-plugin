@@ -1,5 +1,5 @@
 {
-  "name": "@unsplash/ts-refactor-tools",
+  "name": "@unsplash/ts-namespace-import-plugin",
   "version": "0.2.2",
   "description": "Provides tool for refactoring unsplash web codebase",
   "main": "dist/index.js",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unsplash/ts-refactor-tools.git"
+    "url": "git+https://github.com/unsplash/ts-namespace-import-plugin.git"
   },
   "keywords": [
     "typescript"
