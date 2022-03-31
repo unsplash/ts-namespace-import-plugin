@@ -5,7 +5,7 @@ Collection of code actions available as a typescript plugin.
 ## Installation
 
 ```sh
-yarn add @unsplash/ts-refactor-tools
+yarn add --dev @unsplash/ts-refactor-tools
 ```
 
 Then add the following to your `tsconfig.json`.
