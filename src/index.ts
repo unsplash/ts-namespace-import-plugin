@@ -1,6 +1,6 @@
 import * as ts_module from "typescript/lib/tsserverlibrary";
 
-type Configuration = {
+type NamespacesConfig = {
   [namespace: string]: {
     importPath: string;
   };
@@ -39,7 +39,6 @@ const createCodeAction = ({
 };
 
 function init(modules: { typescript: typeof ts_module }) {
-  let config: Configuration = {};
   const ts = modules.typescript;
 
   /** normalize the parameter so we are sure is of type number */
@@ -65,13 +64,10 @@ function init(modules: { typescript: typeof ts_module }) {
     return find(sourceFile);
   };
 
-  // This function is needed to set the config at loading time as well as any further updates.
-  function onConfigurationChanged(newConfig: Configuration) {
-    config = newConfig;
-  }
-
   function create(info: ts.server.PluginCreateInfo) {
-    const proxy = Object.create(null) as ts.LanguageService;
+    const namespaceConfig: NamespacesConfig = info.config.namespaces;
+
+    const proxy: ts.LanguageService = Object.create(null);
     const oldLS = info.languageService;
     for (const k in oldLS) {
       (<any>proxy)[k] = function () {
@@ -109,12 +105,12 @@ function init(modules: { typescript: typeof ts_module }) {
 
       if (
         nodeAtCursor.kind === ts.SyntaxKind.Identifier &&
-        Object.keys(config).includes(text)
+        Object.keys(namespaceConfig).includes(text)
       ) {
         // Since we're using a codefix, if the namespace is already imported the code fix won't be suggested
         const codeAction = createCodeAction({
           fileName,
-          importPath: config[text].importPath,
+          importPath: namespaceConfig[text].importPath,
           namespaceName: text,
         });
 
@@ -152,7 +148,7 @@ function init(modules: { typescript: typeof ts_module }) {
 
       const extras: ts_module.CompletionEntry[] = [];
 
-      for (const namespaceName of Object.keys(config)) {
+      for (const namespaceName of Object.keys(namespace)) {
         if (
           namespaceName.startsWith(text) &&
           findExistingImport(sourceFile, namespaceName) === undefined
@@ -244,7 +240,7 @@ function init(modules: { typescript: typeof ts_module }) {
     return proxy;
   }
 
-  return { create, onConfigurationChanged };
+  return { create };
 }
 
 export = init;
