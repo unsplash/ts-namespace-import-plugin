@@ -1,6 +1,15 @@
 # ts-namespace-import-plugin
 
-Collection of code actions available as a typescript plugin.
+This plugin can help with importing common namespaces into your modules. What is a namespace import you may ask?
+You can learn more about them [here](https://unsplash.com/blog/organizing-typescript-modules/) but in short it looks like the following:
+
+```ts
+import * as SomeNamespace from "path/to/module";
+
+SomeNamespace.doStuff();
+```
+
+We like them because it gives context when a function is used as opposed to have a bunch of named imports. It also reduces naming conflicts.
 
 ## Installation
 
@@ -24,10 +33,6 @@ Then add the following to your `tsconfig.json`.
 ```
 
 ## Configuration
-
-### Namespace imports
-
-This plugin can help with importing common namespaces into your modules. You can learn more about namespace imports [here](https://unsplash.com/blog/organizing-typescript-modules/)
 
 ```json
 {
@@ -58,7 +63,7 @@ MyNamespace.doFoo();
 
 ```sh
 yarn link # From this repo
-yarn link @unsplash/ts-namespace-import-plugin from another repo
+yarn link @unsplash/ts-namespace-import-plugin # from another repo
 yarn run compile # when you make changes here to reflect in your target repo
 ```
 
