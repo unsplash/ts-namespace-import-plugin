@@ -62,4 +62,4 @@ yarn link @unsplash/ts-refactor-tools from another repo
 yarn run compile # when you make changes here to reflect in your target repo
 ```
 
-If you need to log things inside this plugin, they will show up in the `tsserver.log` which can be opened from your target repo using `CMD+P` > `Open TS Server Log`. Keep in mind that everytime you reload your VSCode to take latest changes into account, you'll have to run this again because the file may change location on your filesystem
+If you need to log things inside this plugin, they will show up in the `tsserver.log` which can be opened from your target repo using `CMD+SHIFT+P` > `Open TS Server Log`. Keep in mind that everytime you reload your VSCode to take latest changes into account, you'll have to run this again because the file may change location on your filesystem. You can also [read this](https://github.com/microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#debugging) for more info.
